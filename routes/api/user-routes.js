@@ -53,6 +53,30 @@ router.post('/', (req, res) => {
     });
 });
 
+
+router.post('/login', (req, res) => {
+    // expects {email: 'itsame@hotmale.com', 'password: password123'}
+    User.findOne({
+        where: {
+            email: req.body.email
+        }
+    }).then(dbUserData => {
+        if (!dbUserData) {
+            res.status(400).json({ message: 'No user with that email address!' });
+            return;
+        }
+        // verify user
+        const validPassword = dbUserData.checkPassword(req.body.password);
+        if (!validPassword) {
+            res.status(400).json({ message: 'Incorrect password!'});
+            return;
+        }
+
+        res.json({ user: dbUserData, message: 'You are now logged in!'});
+    });
+});
+
+
 // PUT /api/users/1
 router.put('/:id', (req, res) => {
     // expects {username: 'Mario', email: 'itsame@hotmale.com', password: 'drowssap789'}
@@ -76,6 +100,7 @@ router.put('/:id', (req, res) => {
         res.status(500).json(err);
     });
 });
+
 
 // DELETE /api/users/1
 router.delete('/:id', (req, res) => {
