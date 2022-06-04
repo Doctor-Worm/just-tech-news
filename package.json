@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "node server.js",
     "watch": "nodemon"
   },
@@ -30,6 +30,7 @@
     "sequelize": "^6.20.1"
   },
   "devDependencies": {
+    "jest": "^28.1.0",
     "nodemon": "^2.0.16"
   }
 }
