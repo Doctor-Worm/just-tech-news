@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const sequelize = require('../../config/connection');
 const { Post, User, Vote, Comment } = require('../../models/');
+const withAuth = require('../../utils/auth');
 
 // get all users
 router.get('/', (req, res) => {
@@ -80,11 +81,11 @@ router.get('/:id', (req, res) => {
 
 
 // Create a Post
-router.post('/', (req, res) => {
+router.post('/', withAuth, (req, res) => {
     Post.create({
         title: req.body.title,
         post_url: req.body.post_url,
-        user_id: req.body.user_id
+        user_id: req.session.user_id
     })
     .then(dbPostData => res.json(dbPostData))
     .catch(err => {
@@ -95,7 +96,7 @@ router.post('/', (req, res) => {
 
 
 // Create PUT route for voting on post /api/posts/upvote
-router.put('/upvote', (req, res) => {
+router.put('/upvote', withAuth, (req, res) => {
     // make sure session exists first
     if (req.session) {
         // pass session id along with all destructured properties on req.body using custom static method created in models/Post.js
@@ -110,7 +111,7 @@ router.put('/upvote', (req, res) => {
 
 
 // Update a Post's Title
-router.put('/:id', (req, res) => {
+router.put('/:id', withAuth, (req, res) => {
     Post.update(
         {
             title: req.body.title
@@ -136,7 +137,7 @@ router.put('/:id', (req, res) => {
 
 
 // Delete a Post
-router.delete('/:id', (req, res) => {
+router.delete('/:id', withAuth, (req, res) => {
     Post.destroy({
         where: {
             id: req.params.id
